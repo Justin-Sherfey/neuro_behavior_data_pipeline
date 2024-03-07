@@ -1,3 +1,14 @@
+% Automate laser retrieval, would be existence of evt05, (evt05 - evt07/evt08)
+% add as column
+% Not all animal have laser
+
+% raster plot, visualization
+% align all to zero, bar where laser is on
+% dont have something to have when laser is off
+
+% ai 01 - gavo mirror, should be -2 when off, 0 when on. How long galvo to test how long laser on, at 0
+% ai 02 - piezo mirror, change angle using piezo effect, change intensity 
+
 function trialData = behavior_table(matfile, laser_delay)
     
     fprintf('Processing %s\n', matfile);
