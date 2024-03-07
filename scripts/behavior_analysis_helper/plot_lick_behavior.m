@@ -1,6 +1,5 @@
 function plot_lick_behavior(data, filename)
     % load data from extracted files
-
     right_sounds_evt07 = data.right_sounds_evt07;
     left_sounds_evt08 = data.left_sounds_evt08;
     right_licks_timestamps = data.right_licks_timestamps;
@@ -8,7 +7,6 @@ function plot_lick_behavior(data, filename)
     experiment_start_time = data.start_time;
     experiment_end_time = data.end_time;
 
-    
     % filter licks to experiment window
     right_licks_time = right_licks_timestamps(right_licks_timestamps >= experiment_start_time & right_licks_timestamps <= experiment_end_time);
     right_lick_sounds = right_sounds_evt07.Ts(right_sounds_evt07.Ts >= experiment_start_time & right_sounds_evt07.Ts <= experiment_end_time);

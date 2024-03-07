@@ -7,6 +7,9 @@ function extract_pl2_data(filename)
     right_sounds_evt07 = PL2EventTs(filename, 'EVT07'); % evt07
     left_sounds_evt08 = PL2EventTs(filename, 'EVT08'); % evt08
 
+    % calculate start and end time of each trial
+    [start_time, end_time] = calculate_start_end(evt06);
+    
     % right licks data (Channel 3)
     ad_ai03 = PL2Ad(filename, 'AI03');
     timestamps_ai03 = (0:(length(ad_ai03.Values)-1))' / ad_ai03.ADFreq;
@@ -24,9 +27,6 @@ function extract_pl2_data(filename)
     timestamps_ai05 = (0:(length(ad_ai05.Values)-1))' / ad_ai05.ADFreq;
     camera_data_ai05 = [timestamps_ai05, ad_ai05.Values];
 
-    % calculate start and end time of each trial
-    [start_time, end_time] = calculate_start_end(evt06);
-
     % save counts to a counts struct
     lick_counts = struct('right_licks_count', right_licks_count, 'left_licks_count', left_licks_count);
 
@@ -35,7 +35,7 @@ function extract_pl2_data(filename)
         mkdir(outputDir);
     end
 
-    % Save all data to a .mat file in the specified directory
+    % save to raw data .mat file
     [~,name,~] = fileparts(filename);
     outputFilename = fullfile(outputDir, [name, '.mat']);
     save(outputFilename, 'laser_on_evt05', 'evt06', 'right_sounds_evt07', 'left_sounds_evt08', 'right_lick_data_ai03', ...
