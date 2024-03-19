@@ -1,14 +1,3 @@
-% Automate laser retrieval, would be existence of evt05, (evt05 - evt07/evt08)
-% add as column
-% Not all animal have laser
-
-% raster plot, visualization
-% align all to zero, bar where laser is on
-% dont have something to have when laser is off
-
-% ai 01 - gavo mirror, should be -2 when off, 0 when on. How long galvo to test how long laser on, at 0
-% ai 02 - piezo mirror, change angle using piezo effect, change intensity 
-
 function trialData = behavior_table(matfile, laser_delay)
     
     fprintf('Processing %s\n', matfile);
@@ -73,13 +62,23 @@ function trialData = behavior_table(matfile, laser_delay)
         left_licks_in_trial = raw_data.left_licks_timestamps(raw_data.left_licks_timestamps > current_sound_time & ...
             raw_data.left_licks_timestamps < next_sound_time);
         
-        % populate first lick latency, which is the time of the first lick after the sound
-        trialData.FirstLickLatency(i) = min([right_licks_in_trial; left_licks_in_trial]) - current_sound_time;
+        
+        combined_licks_in_trial = [right_licks_in_trial; left_licks_in_trial];
+
+        % populate first lick latency and lick duration
+        if isempty(combined_licks_in_trial)
+            trialData.FirstLickLatency(i) = NaN;
+            trialData.LickDuration(i) = NaN;
+        else
+            firstLickTime = min(combined_licks_in_trial);
+            lastLickTime = max(combined_licks_in_trial);
+            trialData.FirstLickLatency(i) = firstLickTime - current_sound_time;
+            trialData.LickDuration(i) = lastLickTime - firstLickTime;
+        end
 
         % populate number of licks, between current sound and next sound time
         trialData.NumLicks(i) = length(right_licks_in_trial) + length(left_licks_in_trial);
 
-        % populate lick duration, which is the time between first and last lick in the trial, trial is over when next sound is played
         trialData.LickDuration(i) = max([right_licks_in_trial; left_licks_in_trial]) - min([right_licks_in_trial; left_licks_in_trial]);
     
         % populate right and left licking timestamps
@@ -88,15 +87,20 @@ function trialData = behavior_table(matfile, laser_delay)
 
         % populate laser trial and lesay delay if defined
         if laser_delay > -1
-            % is laser trial
-            trialData.IsLaserTrial(i) = any(abs(raw_data.laser_on_evt05.Ts - current_sound_time) <= 0.5);
-
-            % laser delay
+            % Find the valid laser delay for this trial
+            laserDifferences = raw_data.laser_on_evt05.Ts - current_sound_time;
+            validLaserDifferences = laserDifferences(laserDifferences > 0 & laserDifferences <= 0.5);
+            trialData.IsLaserTrial(i) = ~isempty(validLaserDifferences);
+        
+            % minimum delay
             if trialData.IsLaserTrial(i)
-                trialData.LaserDelay(i) = laser_delay;
+                trialData.LaserDelay(i) = min(validLaserDifferences);
             else
                 trialData.LaserDelay(i) = NaN;
             end
+        else
+            trialData.IsLaserTrial(i) = false;
+            trialData.LaserDelay(i) = NaN;
         end
     end
     
