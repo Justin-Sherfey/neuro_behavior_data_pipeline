@@ -12,10 +12,11 @@ function trialData = behavior_table(matfile, laser_delay)
 
     % initialiize table
     numTrials = length(raw_data.right_sounds_evt07.Ts) + length(raw_data.left_sounds_evt08.Ts);
-    trialData = table('Size', [numTrials, 15], ...
+    trialData = table('Size', [numTrials, 16], ...
         'VariableTypes', {'int32', 'categorical', 'logical', 'double', 'categorical', ...
-                          'double', 'double', 'double', 'double', 'double', 'double', 'double', ...
-                          'double','double','cell', 'cell'}, ...
+                          'double', 'double', 'double', 'double', 'double', ...
+                          'double', 'double', 'double','double','cell', ...
+                          'cell'}, ...
         'VariableNames', {'TrialNumber', 'TrialSide', 'IsLaserTrial', 'LaserDelay', 'RMI', ...
                           'TimeStart', 'TimeEnd', 'TimeDelta', 'CorrectLickPercentage', 'CorrectLickBefore', ...
                           'CorrectLickAfter', 'FirstLickLatency', 'NumLicks', 'LickDuration', 'RightLickingTimestamps', ...
@@ -63,7 +64,6 @@ function trialData = behavior_table(matfile, laser_delay)
         left_licks_in_trial = raw_data.left_licks_timestamps(raw_data.left_licks_timestamps > current_sound_time & ...
             raw_data.left_licks_timestamps < next_sound_time);
         
-        
         combined_licks_in_trial = [right_licks_in_trial; left_licks_in_trial];
 
         % populate first lick latency and lick duration
@@ -80,7 +80,7 @@ function trialData = behavior_table(matfile, laser_delay)
         % populate number of licks, between current sound and next sound time
         trialData.NumLicks(i) = length(right_licks_in_trial) + length(left_licks_in_trial);
 
-        trialData.LickDuration(i) = max([right_licks_in_trial; left_licks_in_trial]) - min([right_licks_in_trial; left_licks_in_trial]);
+        % trialData.LickDuration(i) = max([right_licks_in_trial; left_licks_in_trial]) - min([right_licks_in_trial; left_licks_in_trial]);
     
         % populate right and left licking timestamps
         trialData.RightLickingTimestamps(i) = {right_licks_in_trial};
@@ -100,7 +100,7 @@ function trialData = behavior_table(matfile, laser_delay)
                 trialData.LaserDelay(i) = NaN;
             end
         else
-            trialData.IsLaserTrial(i) = false;
+            trialData.IsLaserTrial(i) = 0;
             trialData.LaserDelay(i) = NaN;
         end
     end
