@@ -13,7 +13,7 @@ function plot_lick_behavior(data, filename)
     left_licks_time = left_licks_timestamps(left_licks_timestamps >= experiment_start_time & left_licks_timestamps <= experiment_end_time);
     left_lick_sounds = left_sounds_evt08.Ts(left_sounds_evt08.Ts >= experiment_start_time & left_sounds_evt08.Ts <= experiment_end_time);
     
-    figure;
+    fig = figure("Visible", "off");
     hold on;
     title('Lick Behavior Analysis');
     xlabel('Time (s)');
@@ -34,7 +34,11 @@ function plot_lick_behavior(data, filename)
     legend('Right Licks','Left Licks','Right Sounds', 'Left Sounds');
     hold off;
 
-    outputDir = './graphs/';
     [~, name, ~] = fileparts(filename);
-    savefig(fullfile(outputDir, [name '.fig']));
+
+    outputDir = ['./', name, '/'];
+
+    savefig(fig, fullfile(outputDir, [name '.fig']));
+
+    close(fig);
 end

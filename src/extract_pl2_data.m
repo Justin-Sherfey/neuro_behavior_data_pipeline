@@ -30,10 +30,7 @@ function extract_pl2_data(filename)
     % save counts to a counts struct
     lick_counts = struct('right_licks_count', right_licks_count, 'left_licks_count', left_licks_count);
 
-    outputDir = './output_data/raw_data/';
-    if ~exist(outputDir, 'dir')
-        mkdir(outputDir);
-    end
+    outputDir = './';
 
     % save to raw data .mat file
     [~,name,~] = fileparts(filename);

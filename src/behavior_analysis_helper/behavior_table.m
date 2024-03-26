@@ -90,7 +90,7 @@ function trialData = behavior_table(matfile, laser_delay)
         if laser_delay > -1
             % Find the valid laser delay for this trial
             laserDifferences = raw_data.laser_on_evt05.Ts - current_sound_time;
-            validLaserDifferences = laserDifferences(laserDifferences > 0 & laserDifferences <= 0.5);
+            validLaserDifferences = laserDifferences(laserDifferences > 0 & laserDifferences <= 1.1);
             trialData.IsLaserTrial(i) = ~isempty(validLaserDifferences);
         
             % minimum delay
@@ -105,9 +105,6 @@ function trialData = behavior_table(matfile, laser_delay)
         end
     end
     
-    % save to mat file
-    save('ProcessedTrialData.mat', 'trialData');
-
     fprintf('Processed %s\n', matfile);
 end
 

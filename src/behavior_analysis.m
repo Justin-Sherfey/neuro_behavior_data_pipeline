@@ -1,11 +1,10 @@
 function behavior_analysis(matfile)
     % load data
     raw_data = load(matfile);
-    
+    fprintf('Starting analysis of data... \n');
+
     % Call functions to extract analysis data
     % can be refactored to use querying from behavior_table
-    rmi_results = rmi(raw_data);
-
     % May not be necessary any more
     behavior_results = calculate_lick_metrics(raw_data);
 
@@ -17,25 +16,28 @@ function behavior_analysis(matfile)
         laser_delay = 1;
     end
 
-    % TODO , need to fix, laser delay seems to be off
+    % TODO , need to fix, laser delay seems to be off (FIXED I think)
     fprintf('Laser delay found: %d \n', laser_delay);
-    btable = behavior_table(matfile,laser_delay);
+    trial_data = behavior_table(matfile,laser_delay);
+    rmi_results = rmi_new_test(trial_data);
     
-    outputDir = './output_data/';
 
     [~, name, ~] = fileparts(matfile);
+
+    outputDir = ['./', name, '/'];
+
+    if ~exist(outputDir, 'dir')
+        mkdir(outputDir);
+    end
+
     filename = fullfile(outputDir, [name, '_analysis.mat']);
 
-    % generate plot and save
-    if ~exist('./graphs/', 'dir')
-        mkdir('./graphs/');
-    end
-    filename_figure = fullfile('./graphs/', [name, '_figure.fig']);
-    plot_lick_behavior(raw_data, filename_figure);
+    plot_lick_behavior(raw_data, name);
 
     % TODO - Add raster plot and other visualizations here
 
     % Save all outputs at once
-    save(filename, 'rmi_results', 'behavior_results', 'btable');
+    save(filename, 'rmi_results', 'behavior_results', 'trial_data');
+    fprintf('Saved analysis results to %s \n', filename);
 end
 
