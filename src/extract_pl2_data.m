@@ -1,5 +1,11 @@
 % Extract pl2 data and
 function extract_pl2_data(filename)
+
+    % check if file exists
+    if ~exist(filename, 'file')
+        error('File does not exist');
+    end
+
     fprintf('Starting extraction of PL2 Data\n');
     % event data (EVT06, EVT07, EVT08)
     laser_on_evt05 = PL2EventTs(filename, 'EVT05'); % laser on
@@ -30,10 +36,17 @@ function extract_pl2_data(filename)
     % save counts to a counts struct
     lick_counts = struct('right_licks_count', right_licks_count, 'left_licks_count', left_licks_count);
 
-    outputDir = './';
+    
 
     % save to raw data .mat file
     [~,name,~] = fileparts(filename);
+
+    outputDir = ['./', name, '/'];
+
+    if ~exist(outputDir, 'dir')
+        mkdir(outputDir);
+    end
+
     outputFilename = fullfile(outputDir, [name, '.mat']);
     save(outputFilename, 'laser_on_evt05', 'evt06', 'right_sounds_evt07', 'left_sounds_evt08', 'right_lick_data_ai03', ...
         'left_lick_data_ai04', "camera_data_ai05", "right_licks_timestamps", "lick_counts", ...

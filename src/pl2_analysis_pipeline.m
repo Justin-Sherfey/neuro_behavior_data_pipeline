@@ -34,4 +34,7 @@ function pl2_analysis_pipeline(pl2_filename)
     % analyze behavior
     behavior_analysis(matfile);
 
+    fprintf('Creating Visualizations\n');
+    %plot_raster('./' + name + '/');
+
 end

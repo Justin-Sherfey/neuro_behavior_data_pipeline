@@ -1,4 +1,10 @@
 function behavior_analysis(matfile)
+    % check if matfile exists
+    if ~exist(matfile, 'file')
+        fprintf('%s does not exist.\n', matfile);
+        return;
+    end
+
     % load data
     raw_data = load(matfile);
     fprintf('Starting analysis of data... \n');
